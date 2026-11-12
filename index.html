@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">\n<link rel="manifest" href="./manifest.webmanifest">\n<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<meta name="description" content="Study Tracker Free — your personal study dashboard">
+<title>Study Tracker Free</title>
+<style>
+:root{--bg:#0b1020;--panel:#111827;--panel2:#151d30;--line:#263149;--text:#f4f6fb;--muted:#929bb0;--purple:#8b5cf6;--blue:#60a5fa;--green:#10b981;--orange:#f59e0b;--red:#fb7185;--radius:20px}
+*{box-sizing:border-box}html{background:var(--bg);scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}.app{display:grid;grid-template-columns:74px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;border-right:1px solid #202a40;background:#0d1425;display:flex;align-items:center;flex-direction:column;padding:18px 10px;gap:14px;z-index:5}
+.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#8b5cf6,#3b82f6);display:grid;place-items:center;font-size:20px;font-weight:800;margin-bottom:24px}
+.navbtn{width:44px;height:44px;border:0;border-radius:14px;background:transparent;color:#8792a9;font-size:18px;display:grid;place-items:center;transition:.2s}
+.navbtn:hover,.navbtn.active{background:#202945;color:#fff}.navspacer{flex:1}
+.main{min-width:0;max-width:1600px;width:100%;margin:auto;padding:22px 26px 100px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
+.brand small{color:var(--muted);display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase}.brand strong{font-size:19px;letter-spacing:-.03em}
+.search{width:min(360px,42vw);position:relative}.search input{width:100%;background:#111a2c;border:1px solid var(--line);border-radius:14px;padding:11px 14px 11px 38px;color:white;outline:none}.search:before{content:"⌕";position:absolute;left:14px;top:6px;color:var(--muted);font-size:22px}
+.profile{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#252e49;border:1px solid #394663}
+.page{display:none}.page.active{display:block}
+.pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 0 18px}.pagehead h1{font-size:24px;margin:0 0 4px;letter-spacing:-.04em}.sub{color:var(--muted);font-size:12px}
+.grid-main{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(270px,.9fr);gap:16px}
+.stack{display:grid;gap:16px;align-content:start}.card{background:linear-gradient(145deg,#141c2d,#101725);border:1px solid #253149;border-radius:var(--radius);padding:18px;box-shadow:0 12px 34px #0002;min-width:0}
+.card h2{font-size:15px;margin:0 0 14px;letter-spacing:-.02em}.cardhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.cardhead h2{margin:0}
+.btn{border:1px solid #34415d;background:#202a42;padding:9px 13px;border-radius:12px;font-weight:600;font-size:12px}.btn:hover{background:#2a3755}.btn.primary{background:var(--purple);border-color:var(--purple);color:#fff}.btn.ghost{background:transparent}.btn.danger{color:#fda4af;border-color:#713b4a;background:#321d2a}
+.btn.small{padding:6px 9px;font-size:11px;border-radius:9px}.muted{color:var(--muted)}.tiny{font-size:11px;color:var(--muted)}
+.progress-layout{display:grid;grid-template-columns:170px 1fr;gap:20px;align-items:center}
+.ring{--p:0;--ring:var(--green);width:126px;height:126px;border-radius:50%;background:conic-gradient(var(--ring) calc(var(--p)*1%),#283248 0);display:grid;place-items:center;position:relative;margin:auto}
+.ring:before{content:"";position:absolute;inset:9px;border-radius:50%;background:#141c2d}.ringin{z-index:1;text-align:center}.ringin strong{font-size:23px;display:block;letter-spacing:-.04em}.ringin span{font-size:10px;color:var(--muted)}
+.goalrow{display:flex;justify-content:flex-end;align-items:center;gap:6px;margin-bottom:12px}.goalrow span{font-size:11px;color:var(--muted)}.goalbtn{background:#171f32;border:1px solid #303b54;border-radius:9px;padding:5px 9px;font-size:10px}.goalbtn.active{background:#6339b8;border-color:#8b5cf6}
+.task-summary{border:1px solid #2b3650;border-radius:16px;padding:15px;background:#0e1525}.task-summary strong{font-size:21px}.task-summary p{margin:4px 0;color:var(--muted);font-size:11px}
+.statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{background:linear-gradient(145deg,#151e31,#101725);border:1px solid #253149;border-radius:17px;padding:15px}.stat .ico{width:28px;height:28px;border-radius:10px;display:grid;place-items:center;margin-bottom:8px;background:#29304b}.stat strong{font-size:21px;display:block}.stat span{font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.activity{display:grid;gap:0}.activityrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #222c40}.activityrow:last-child{border:0}.dot{width:7px;height:7px;border-radius:50%;background:var(--blue);flex:none}.activityrow .name{flex:1}.activityrow strong{font-size:12px}
+.calendar-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.calendar-head strong{font-size:13px}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calendar-grid span{text-align:center;color:#748099;font-size:9px;padding:4px 0}.day{border:1px solid transparent;background:#182238;border-radius:8px;min-height:29px;font-size:10px;color:#d8deeb}.day:hover,.day.selected{border-color:#9b78ff;background:#5c3aa0}.day.has{background:#33265e}.day.empty{visibility:hidden}
+.selectedday{background:#0d1423;border:1px solid #29354e;border-radius:15px;padding:13px;margin-top:14px}.selectedday strong{font-size:16px}.minirow{display:flex;justify-content:space-between;border:1px solid #273149;border-radius:10px;padding:8px 10px;margin-top:8px;font-size:10px;color:var(--muted)}.minirow b{color:#fff}
+.weekbars{height:150px;display:flex;align-items:end;justify-content:space-around;gap:10px;padding:12px 4px 0;border-bottom:1px solid #34405a}.barcol{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:end;gap:7px;flex:1}.bar{width:min(28px,70%);background:linear-gradient(180deg,#8b5cf6,#4f46e5);border-radius:7px 7px 2px 2px;min-height:3px}.barcol small{font-size:10px;color:var(--muted)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.field{background:#0d1423;border:1px solid #303b54;color:#f4f6fb;border-radius:10px;padding:9px 11px;outline:none;min-width:0}.field:focus{border-color:#8b5cf6}.field::placeholder{color:#69758e}
+.list{display:grid;gap:9px}.subject{border:1px solid #2a3650;border-radius:15px;background:#111a2b;overflow:hidden}.subjecttop{display:flex;align-items:center;gap:10px;padding:13px}.subjectname{font-weight:650;flex:1}.subjectmeta{font-size:10px;color:var(--muted)}.subjectbody{padding:0 13px 13px 42px;display:grid;gap:7px}.topic{display:flex;align-items:center;gap:9px;background:#0d1423;border:1px solid #273149;border-radius:10px;padding:8px 10px}.topic[draggable=true]{cursor:grab}.topic span:nth-child(2){flex:1}.topic.done span:nth-child(2){color:#7d8aa3;text-decoration:line-through}.topic input{accent-color:#8b5cf6}.handle{color:#65718a;cursor:grab}
+.quest{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid #29354e;border-radius:13px;background:#111a2b}.quest input{accent-color:#8b5cf6;width:17px;height:17px}.quest label{flex:1}.quest.done label{text-decoration:line-through;color:#7f8aa1}.pill{font-size:10px;border-radius:20px;padding:4px 8px;background:#242d48;color:#b8a5ff}
+.timer{text-align:center;padding:20px}.timer strong{font-size:52px;letter-spacing:-.06em;font-variant-numeric:tabular-nums}.timer .muted{margin:5px 0 16px}.timercontrols{display:flex;justify-content:center;gap:8px}
+.chart{height:190px;display:flex;align-items:end;gap:10px;border-bottom:1px solid #34405a;padding:10px 5px}.chart .barcol{max-width:70px}
+.achievementgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}.achievement{border:1px solid #2a3650;background:#111a2b;border-radius:14px;padding:14px}.achievement .medal{font-size:24px}.achievement strong{display:block;margin:7px 0 2px}
+.settingsrow{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid #273149;gap:12px}
+.bottomnav{display:none}
+.empty{padding:25px;text-align:center;color:var(--muted);border:1px dashed #35415c;border-radius:13px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#27334e;border:1px solid #4b5b7c;padding:10px 16px;border-radius:12px;z-index:20;display:none;box-shadow:0 10px 30px #0008}
+@media(max-width:900px){.app{grid-template-columns:62px 1fr}.main{padding:18px 16px 90px}.grid-main{grid-template-columns:1fr}.calendarcard{display:grid;grid-template-columns:1fr 1fr;gap:16px}.calendarcard h2{grid-column:1/-1}.selectedday{margin-top:0}.statgrid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:620px){.app{display:block}.sidebar{display:none}.main{padding:15px 13px 95px}.topbar{margin-bottom:18px}.brand strong{font-size:16px}.search{width:42vw}.pagehead h1{font-size:21px}.progress-layout{grid-template-columns:120px 1fr;gap:10px}.ring{width:108px;height:108px}.ringin strong{font-size:19px}.statgrid{grid-template-columns:repeat(2,1fr);gap:9px}.stat{padding:12px}.calendarcard{display:block}.selectedday{margin-top:12px}.bottomnav{display:flex;position:fixed;bottom:10px;left:50%;transform:translateX(-50%);z-index:10;background:#101827ed;border:1px solid #34415c;border-radius:18px;padding:7px;gap:3px;box-shadow:0 12px 35px #0009;backdrop-filter:blur(16px);max-width:calc(100vw - 20px)}.bottomnav button{width:38px;height:38px;border:0;background:transparent;color:#9aa6bd;border-radius:12px;font-size:17px}.bottomnav button.active{background:#5b3aa0;color:white}.topbar .profile{display:none}.card{padding:15px}.timer strong{font-size:43px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo">S</div>
+  <button class="navbtn active" data-page="dashboard" title="Dashboard">▦</button>
+  <button class="navbtn" data-page="study" title="Study map">▤</button>
+  <button class="navbtn" data-page="tasks" title="Tasks">☷</button>
+  <button class="navbtn" data-page="sessions" title="Sessions">◷</button>
+  <button class="navbtn" data-page="calendar" title="Calendar">▣</button>
+  <button class="navbtn" data-page="stats" title="Statistics">▥</button>
+  <button class="navbtn" data-page="achievements" title="Achievements">◎</button>
+  <div class="navspacer"></div><button class="navbtn" data-page="settings" title="Settings">⚙</button>
+</aside>
+<main class="main">
+<header class="topbar">
+  <div class="brand"><small>PERSONAL LEARNING SPACE</small><strong>Study Tracker <span style="color:#a78bfa">Free</span></strong></div>
+  <div class="search"><input id="globalSearch" placeholder="Search..." aria-label="Search"></div>
+  <div class="profile">✦</div>
+</header>
+
+<section class="page active" id="page-dashboard">
+ <div class="pagehead"><div><h1>Dashboard</h1><div class="sub" id="todayLabel"></div></div><button class="btn primary" onclick="showPage('tasks')">＋ Add task</button></div>
+ <div class="grid-main">
+  <div class="stack">
+   <div class="card">
+    <div class="cardhead"><h2>Today's Progress</h2><div class="goalrow"><span>Goal</span><button class="goalbtn" data-goal="1">1h</button><button class="goalbtn" data-goal="2">2h</button><button class="goalbtn active" data-goal="3">3h</button><button class="goalbtn" data-goal="4">4h</button><button class="goalbtn" data-goal="6">6h</button></div></div>
+    <div class="progress-layout"><div class="ring" id="todayRing"><div class="ringin"><strong id="todayHours">0m</strong><span id="todayPercent">0% of 3h goal</span></div></div><div class="task-summary"><div style="display:flex;align-items:center;gap:8px"><span style="color:var(--green)">◉</span><strong id="taskCount">0/0</strong></div><p>Tasks completed today</p><p id="taskHint">Add a task to get started</p></div></div>
+   </div>
+   <div class="statgrid">
+    <div class="stat"><div class="ico">◷</div><strong id="totalHours">0h</strong><span>Total hours</span></div>
+    <div class="stat"><div class="ico">⏱</div><strong id="sessionsCount">0</strong><span>Sessions</span></div>
+    <div class="stat"><div class="ico">◉</div><strong id="avgDaily">0m</strong><span>Avg. daily</span></div>
+    <div class="stat"><div class="ico">♨</div><strong id="streak">0d</strong><span>Streak</span></div>
+   </div>
+   <div class="card"><div class="cardhead"><h2>Recent Activity</h2><button class="btn small" onclick="showPage('sessions')">View all</button></div><div class="activity" id="recentActivity"><div class="empty">Your study sessions will appear here.</div></div></div>
+   <div class="card"><div class="cardhead"><h2>Weekly Rhythm</h2><span class="tiny">Study time · last 7 days</span></div><div class="weekbars" id="weekBars"></div></div>
+  </div>
+  <div class="stack">
+   <div class="card calendarcard"><h2>Monthly Overview</h2><div><div class="calendar-head"><button class="btn small" onclick="changeMonth(-1)">‹</button><strong id="monthLabel"></strong><button class="btn small" onclick="changeMonth(1)">›</button></div><div class="calendar-grid" id="calendarGrid"></div><div class="tiny" style="margin-top:10px">Activity intensity · study time</div></div><div class="selectedday"><div class="tiny">SELECTED DAY</div><strong id="selectedDate"></strong><div class="minirow"><span>Total study time</span><b id="selectedTime">0m</b></div><div class="minirow"><span>Tasks completed</span><b id="selectedTasks">0/0</b></div></div></div>
+   <div class="card"><div class="cardhead"><h2>Level & XP</h2><span class="pill" id="levelLabel">Level 1</span></div><div style="display:flex;justify-content:space-between;margin-bottom:7px"><b id="xpLabel">0 XP</b><span class="tiny" id="nextXp">100 XP to next level</span></div><div style="height:9px;background:#29334a;border-radius:20px;overflow:hidden"><div id="xpBar" style="height:100%;width:0;background:linear-gradient(90deg,#8b5cf6,#60a5fa);border-radius:20px"></div></div></div>
+   <div class="card"><h2>Today's Focus</h2><div id="focusList" class="list"><div class="empty">Add your first quest.</div></div><button class="btn ghost" style="width:100%;margin-top:12px" onclick="showPage('tasks')">Open quests →</button></div>
+  </div>
+ </div>
+</section>
+
+<section class="page" id="page-study">
+ <div class="pagehead"><div><h1>Study Map</h1><div class="sub">Organise your syllabus and track topic completion.</div></div><button class="btn primary" onclick="addSubject()">＋ Add subject</button></div>
+ <div class="card"><div class="cardhead"><h2>Your subjects</h2><span class="pill" id="syllabusProgress">0% complete</span></div><div class="list" id="subjectList"></div></div>
+</section>
+
+<section class="page" id="page-tasks">
+ <div class="pagehead"><div><h1>Tasks & Quests</h1><div class="sub">Turn today's study plan into achievable quests.</div></div><button class="btn primary" onclick="addTask()">＋ Add quest</button></div>
+ <div class="card"><div class="cardhead"><h2>Today's quests</h2><span class="pill" id="questProgress">0 completed</span></div><div class="list" id="taskList"></div></div>
+</section>
+
+<section class="page" id="page-sessions">
+ <div class="pagehead"><div><h1>Study Sessions</h1><div class="sub">Focus timer and your session history.</div></div></div>
+ <div class="grid-main"><div class="card timer"><div class="tiny">FOCUS SESSION</div><h2 style="margin:8px 0">Stay focused. One task at a time.</h2><select class="field" id="sessionSubject" style="max-width:260px;width:100%"></select><div><strong id="timerDisplay">25:00</strong></div><div class="muted" id="timerStatus">Ready when you are</div><div class="timercontrols"><button class="btn primary" id="timerStart" onclick="toggleTimer()">Start focus</button><button class="btn" onclick="resetTimer()">Reset</button></div><div class="toolbar" style="justify-content:center;margin-top:18px"><button class="goalbtn" onclick="setTimer(15)">15 min</button><button class="goalbtn active" onclick="setTimer(25)">25 min</button><button class="goalbtn" onclick="setTimer(50)">50 min</button></div></div><div class="card"><h2>Session tips</h2><p class="muted">Choose a subject, start the timer, and focus on one task. Completed focus sessions are added to your study history.</p><div class="minirow"><span>XP per completed session</span><b>+25 XP</b></div><div class="minirow"><span>Short break suggestion</span><b>5 minutes</b></div></div></div>
+ <div class="card" style="margin-top:16px"><h2>Session history</h2><div id="sessionHistory" class="activity"></div></div>
+</section>
+
+<section class="page" id="page-calendar">
+ <div class="pagehead"><div><h1>Calendar</h1><div class="sub">Review your study consistency day by day.</div></div><div class="toolbar"><button class="btn" onclick="changeMonth(-1)">‹ Previous</button><button class="btn" onclick="changeMonth(1)">Next ›</button></div></div>
+ <div class="card"><div class="calendar-head"><strong id="monthLabel2"></strong></div><div class="calendar-grid" id="calendarGrid2"></div><div class="selectedday"><div class="tiny">SELECTED DAY</div><strong id="selectedDate2"></strong><div class="minirow"><span>Study time</span><b id="selectedTime2">0m</b></div><div class="minirow"><span>Tasks completed</span><b id="selectedTasks2">0/0</b></div></div></div>
+</section>
+
+<section class="page" id="page-stats">
+ <div class="pagehead"><div><h1>Statistics & Progress</h1><div class="sub">Understand your effort and consistency.</div></div></div>
+ <div class="statgrid" style="margin-bottom:16px"><div class="stat"><div class="ico">◷</div><strong id="statsHours">0h</strong><span>Total study time</span></div><div class="stat"><div class="ico">✓</div><strong id="statsTasks">0</strong><span>Tasks completed</span></div><div class="stat"><div class="ico">⏱</div><strong id="statsSessions">0</strong><span>Sessions</span></div><div class="stat"><div class="ico">▤</div><strong id="statsTopics">0%</strong><span>Syllabus complete</span></div></div>
+ <div class="grid-main"><div class="card"><h2>Study time · last 7 days</h2><div class="chart" id="statsChart"></div></div><div class="card"><h2>Subject completion</h2><div id="subjectStats" class="list"></div></div></div>
+</section>
+
+<section class="page" id="page-achievements">
+ <div class="pagehead"><div><h1>Achievements</h1><div class="sub">Small milestones make big progress.</div></div></div>
+ <div class="card"><h2>Your milestones</h2><div class="achievementgrid" id="achievementGrid"></div></div>
+</section>
+
+<section class="page" id="page-settings">
+ <div class="pagehead"><div><h1>Settings</h1><div class="sub">Manage your study tracker and personal data.</div></div></div>
+ <div class="card"><h2>Preferences</h2><div class="settingsrow"><div><b>Daily study goal</b><div class="tiny">Used in your dashboard progress ring.</div></div><select class="field" id="settingsGoal"><option value="1">1 hour</option><option value="2">2 hours</option><option value="3">3 hours</option><option value="4">4 hours</option><option value="6">6 hours</option><option value="8">8 hours</option></select></div><div class="settingsrow"><div><b>Export your data</b><div class="tiny">Download a backup of subjects, tasks and sessions.</div></div><button class="btn" onclick="exportData()">Export JSON</button></div><div class="settingsrow"><div><b>Import backup</b><div class="tiny">Restore a previously exported backup.</div></div><label class="btn">Choose file<input type="file" accept="application/json" id="importFile" hidden></label></div><div class="settingsrow"><div><b>Reset all data</b><div class="tiny">Permanently clear this device's study tracker data.</div></div><button class="btn danger" onclick="resetData()">Reset data</button></div><p class="tiny">Your data is stored locally in this browser on this device. Export backups regularly if you use multiple devices.</p></div>
+</section>
+</main>
+</div>
+<nav class="bottomnav" id="bottomNav">
+<button class="active" data-page="dashboard" title="Dashboard">▦</button><button data-page="study" title="Study map">▤</button><button data-page="tasks" title="Tasks">☷</button><button data-page="sessions" title="Sessions">◷</button><button data-page="calendar" title="Calendar">▣</button><button data-page="stats" title="Statistics">▥</button><button data-page="achievements" title="Achievements">◎</button><button data-page="settings" title="Settings">⚙</button>
+</nav>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='studyTrackerFree_v1';
+const defaultSubjects=[
+ {id:'s1',name:'Constitution & Polity',topics:['Historical Background','Making of the Constitution','Preamble','Fundamental Rights','Directive Principles','Union Government','State Government','Constitutional Bodies','Non-Constitutional Bodies']},
+ {id:'s2',name:'History',topics:['Ancient India','Medieval India','Modern India','Maharashtra History','Social Reformers']},
+ {id:'s3',name:'Geography',topics:['Physical Geography','Indian Geography','Maharashtra Geography','World Geography']},
+ {id:'s4',name:'Economy',topics:['Basic Concepts','Indian Economy','Maharashtra Economy','Budget & Economic Survey']},
+ {id:'s5',name:'Science',topics:['Physics','Chemistry','Biology','Technology']},
+ {id:'s6',name:'Environment',topics:['Ecology','Biodiversity','Climate Change','Conservation']},
+ {id:'s7',name:'Maharashtra Special',topics:['Maharashtra Administration','Schemes','Culture & Heritage']},
+ {id:'s8',name:'Maths & Reasoning',topics:['Arithmetic','Algebra','Geometry','Logical Reasoning']},
+ {id:'s9',name:'Current Affairs',topics:['National','International','Maharashtra','Reports & Indices']},
+ {id:'s10',name:'Marathi & English',topics:['Marathi Grammar','Marathi Vocabulary','English Grammar','English Vocabulary']}
+].map(s=>({...s,topics:s.topics.map((name,i)=>({id:s.id+'t'+i,name,done:false}))}));
+let data=loadData(), selectedDate=new Date(), monthCursor=new Date(), timerSeconds=1500,timerInterval=null,timerRunning=false;
+function loadData(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.subjects)return d}catch(e){}return {subjects:defaultSubjects,tasks:[],sessions:[],goal:3,xp:0,created:Date.now()}}
+function save(){localStorage.setItem(KEY,JSON.stringify(data));renderAll()}
+function uid(){return 'id'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function dateKey(d){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
+function todayKey(){return dateKey(new Date())}
+function minsToday(key=todayKey()){return data.sessions.filter(s=>s.date===key).reduce((a,s)=>a+s.minutes,0)}
+function tasksFor(key=todayKey()){return data.tasks.filter(t=>t.date===key)}
+function fmtM(m){if(m<60)return m+'m';let h=Math.floor(m/60),r=m%60;return h+'h'+(r?' '+r+'m':'')}
+function fmtHours(m){return (m/60).toFixed(m%60===0?0:1)+'h'}
+function toast(msg){let el=document.getElementById('toast');el.textContent=msg;el.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>el.style.display='none',2200)}
+function showPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+name));document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===name));if(name==='sessions')renderSessions();if(name==='calendar')renderCalendar();window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+document.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>{data.goal=+b.dataset.goal;save()}));
+function renderDashboard(){
+ const mins=minsToday(),goal=(data.goal||3)*60,pct=Math.min(100,Math.round(mins/goal*100)),tasks=tasksFor(),done=tasks.filter(t=>t.done).length;
+ document.getElementById('todayRing').style.setProperty('--p',pct);document.getElementById('todayHours').textContent=fmtM(mins);document.getElementById('todayPercent').textContent=pct+'% of '+goal/60+'h goal';
+ document.getElementById('taskCount').textContent=done+'/'+tasks.length;document.getElementById('taskHint').textContent=tasks.length? (done===tasks.length?'All quests completed — great work!':'Keep going, one task at a time.'):'No tasks for today';
+ document.querySelectorAll('[data-goal]').forEach(b=>b.classList.toggle('active',+b.dataset.goal===data.goal));
+ const total=data.sessions.reduce((a,s)=>a+s.minutes,0);document.getElementById('totalHours').textContent=fmtHours(total);document.getElementById('sessionsCount').textContent=data.sessions.length;
+ const days=[...new Set(data.sessions.map(s=>s.date))].length;document.getElementById('avgDaily').textContent=days?fmtM(Math.round(total/days)):'0m';document.getElementById('streak').textContent=calcStreak()+'d';
+ document.getElementById('todayLabel').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ const recent=[...data.sessions].sort((a,b)=>b.at-a.at).slice(0,5);document.getElementById('recentActivity').innerHTML=recent.length?recent.map(s=>`<div class="activityrow"><i class="dot"></i><span class="name">${esc(s.subject)}</span><span class="tiny">${timeAgo(s.at)}</span><strong>${fmtM(s.minutes)}</strong></div>`).join(''):'<div class="empty">Your study sessions will appear here.</div>';
+ document.getElementById('focusList').innerHTML=tasks.slice(0,3).length?tasks.slice(0,3).map(t=>`<div class="quest ${t.done?'done':''}"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTask('${t.id}')"><label>${esc(t.name)}</label></div>`).join(''):'<div class="tiny">No quests added yet.</div>';
+ const xp=data.xp||0,level=Math.floor(xp/100)+1,into=xp%100;document.getElementById('levelLabel').textContent='Level '+level;document.getElementById('xpLabel').textContent=xp+' XP';document.getElementById('nextXp').textContent=(100-into)+' XP to next level';document.getElementById('xpBar').style.width=into+'%';
+ renderWeekBars();renderCalendar();
+}
+function calcStreak(){let n=0,d=new Date();if(!data.sessions.length)return 0;while(true){if(minsToday(dateKey(d))>0){n++;d.setDate(d.getDate()-1)}else break}return n}
+function timeAgo(ts){let m=Math.floor((Date.now()-ts)/60000);if(m<60)return m+'m ago';if(m<1440)return Math.floor(m/60)+'h ago';return Math.floor(m/1440)+'d ago'}
+function renderWeekBars(){let days=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);days.push({label:d.toLocaleDateString(undefined,{weekday:'short'}),m:minsToday(dateKey(d))})}let max=Math.max(60,...days.map(x=>x.m));document.getElementById('weekBars').innerHTML=days.map(x=>`<div class="barcol"><small>${x.m?fmtM(x.m):'—'}</small><div class="bar" style="height:${Math.max(3,x.m/max*100)}%"></div><small>${x.label}</small></div>`).join('')}
+function renderCalendar(){const month=monthCursor.getMonth(),year=monthCursor.getFullYear(),first=new Date(year,month,1).getDay(),count=new Date(year,month+1,0).getDate(),label=new Date(year,month,1).toLocaleDateString(undefined,{month:'long',year:'numeric'});['monthLabel','monthLabel2'].forEach(id=>{let e=document.getElementById(id);if(e)e.textContent=label});let cells=['Su','Mo','Tu','We','Th','Fr','Sa'].map(x=>`<span>${x}</span>`);for(let i=0;i<first;i++)cells.push('<button class="day empty"></button>');for(let n=1;n<=count;n++){let d=new Date(year,month,n),key=dateKey(d),m=minsToday(key),sel=key===dateKey(selectedDate);cells.push(`<button class="day ${m?'has':''} ${sel?'selected':''}" onclick="selectDate('${key}')">${n}</button>`)}let html=cells.join('');['calendarGrid','calendarGrid2'].forEach(id=>{let e=document.getElementById(id);if(e)e.innerHTML=html});let key=dateKey(selectedDate),t=tasksFor(key),done=t.filter(x=>x.done).length;['selectedDate','selectedDate2'].forEach(id=>{let e=document.getElementById(id);if(e)e.textContent=selectedDate.toLocaleDateString(undefined,{day:'numeric',month:'long',year:'numeric'})});['selectedTime','selectedTime2'].forEach(id=>{let e=document.getElementById(id);if(e)e.textContent=fmtM(minsToday(key))});['selectedTasks','selectedTasks2'].forEach(id=>{let e=document.getElementById(id);if(e)e.textContent=done+'/'+t.length})}
+function selectDate(key){selectedDate=new Date(key+'T12:00:00');renderCalendar()}
+function changeMonth(delta){monthCursor.setMonth(monthCursor.getMonth()+delta);renderCalendar()}
+function renderStudy(){let total=0,done=0;data.subjects.forEach(s=>s.topics.forEach(t=>{total++;if(t.done)done++}));document.getElementById('syllabusProgress').textContent=(total?Math.round(done/total*100):0)+'% complete';document.getElementById('subjectList').innerHTML=data.subjects.map((s,i)=>{let d=s.topics.filter(t=>t.done).length,p=s.topics.length?Math.round(d/s.topics.length*100):0;return `<div class="subject" data-subject="${s.id}"><div class="subjecttop"><span class="handle" title="Drag to reorder">⠿</span><span class="subjectname">${esc(s.name)}</span><span class="subjectmeta">${d}/${s.topics.length}</span><span class="pill">${p}%</span><button class="btn small" onclick="toggleSubject('${s.id}')">Topics ▾</button><button class="btn small" onclick="renameSubject('${s.id}')">✎</button><button class="btn small danger" onclick="deleteSubject('${s.id}')">×</button></div><div class="subjectbody" id="body-${s.id}" style="display:none">${s.topics.map(t=>`<div class="topic ${t.done?'done':''}" draggable="true" data-topic="${t.id}" data-parent="${s.id}" ondragstart="dragTopic(event)" ondragover="event.preventDefault()" ondrop="dropTopic(event)"><span class="handle">⠿</span><input type="checkbox" ${t.done?'checked':''} onchange="toggleTopic('${s.id}','${t.id}')"><span>${esc(t.name)}</span><button class="btn small" onclick="renameTopic('${s.id}','${t.id}')">✎</button><button class="btn small danger" onclick="deleteTopic('${s.id}','${t.id}')">×</button></div>`).join('')}<button class="btn small" onclick="addTopic('${s.id}')">＋ Add topic</button></div></div>`}).join('')||'<div class="empty">No subjects yet. Add your first subject.</div>';enableSubjectDrag()}
+function toggleSubject(id){let e=document.getElementById('body-'+id);e.style.display=e.style.display==='none'?'grid':'none'}
+function addSubject(){let name=prompt('Subject name?');if(!name||!name.trim())return;data.subjects.push({id:uid(),name:name.trim(),topics:[]});save();toast('Subject added')}
+function renameSubject(id){let s=data.subjects.find(x=>x.id===id),n=prompt('Edit subject name:',s.name);if(n&&n.trim()){s.name=n.trim();save()}}
+function deleteSubject(id){if(!confirm('Delete this subject and all its topics?'))return;data.subjects=data.subjects.filter(s=>s.id!==id);save()}
+function addTopic(id){let s=data.subjects.find(x=>x.id===id),n=prompt('Topic name?');if(n&&n.trim()){s.topics.push({id:uid(),name:n.trim(),done:false});save()}}
+function renameTopic(sid,tid){let t=data.subjects.find(s=>s.id===sid).topics.find(t=>t.id===tid),n=prompt('Edit topic:',t.name);if(n&&n.trim()){t.name=n.trim();save()}}
+function deleteTopic(sid,tid){let s=data.subjects.find(s=>s.id===sid);s.topics=s.topics.filter(t=>t.id!==tid);save()}
+function toggleTopic(sid,tid){let t=data.subjects.find(s=>s.id===sid).topics.find(t=>t.id===tid);t.done=!t.done;if(t.done){data.xp=(data.xp||0)+5;toast('+5 XP · Topic completed')}save()}
+let draggedTopic=null;function dragTopic(e){draggedTopic={tid:e.currentTarget.dataset.topic,sid:e.currentTarget.dataset.parent};e.dataTransfer.effectAllowed='move'}
+function dropTopic(e){e.preventDefault();let target=e.currentTarget,sid=target.dataset.parent,tid=target.dataset.topic;if(!draggedTopic||draggedTopic.sid!==sid||draggedTopic.tid===tid)return;let s=data.subjects.find(x=>x.id===sid),from=s.topics.findIndex(t=>t.id===draggedTopic.tid),to=s.topics.findIndex(t=>t.id===tid),[item]=s.topics.splice(from,1);s.topics.splice(to,0,item);draggedTopic=null;save();toast('Topic order updated')}
+function enableSubjectDrag(){let els=[...document.querySelectorAll('.subject')];els.forEach(el=>{el.querySelector('.subjecttop .handle').ondragstart=()=>{};el.draggable=true;el.ondragstart=()=>{window.dragSubject=el.dataset.subject};el.ondragover=e=>e.preventDefault();el.ondrop=e=>{e.preventDefault();let from=data.subjects.findIndex(s=>s.id===window.dragSubject),to=data.subjects.findIndex(s=>s.id===el.dataset.subject);if(from<0||to<0||from===to)return;let [x]=data.subjects.splice(from,1);data.subjects.splice(to,0,x);save()}})}
+function addTask(){let name=prompt('What is your quest?');if(!name||!name.trim())return;let subject=data.subjects[0]?.name||'General';data.tasks.push({id:uid(),name:name.trim(),subject,date:todayKey(),done:false});save();toast('Quest added')}
+function toggleTask(id){let t=data.tasks.find(t=>t.id===id);if(!t)return;t.done=!t.done;if(t.done){data.xp=(data.xp||0)+10;toast('+10 XP · Quest completed')}save()}
+function deleteTask(id){data.tasks=data.tasks.filter(t=>t.id!==id);save()}
+function renderTasks(){let tasks=tasksFor(),done=tasks.filter(t=>t.done).length;document.getElementById('questProgress').textContent=done+' completed';document.getElementById('taskList').innerHTML=tasks.length?tasks.map(t=>`<div class="quest ${t.done?'done':''}"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTask('${t.id}')"><label>${esc(t.name)}<div class="tiny">${esc(t.subject||'General')}</div></label><button class="btn small danger" onclick="deleteTask('${t.id}')">×</button></div>`).join(''):'<div class="empty">No quests for today. Add a quest to plan your study.</div>'}
+function renderSessions(){let sel=document.getElementById('sessionSubject');sel.innerHTML=data.subjects.map(s=>`<option>${esc(s.name)}</option>`).join('')+'<option>General Study</option>';document.getElementById('sessionHistory').innerHTML=data.sessions.length?[...data.sessions].sort((a,b)=>b.at-a.at).map(s=>`<div class="activityrow"><i class="dot"></i><span class="name">${esc(s.subject)}</span><span class="tiny">${new Date(s.at).toLocaleString()}</span><strong>${fmtM(s.minutes)}</strong></div>`).join(''):'<div class="empty">No sessions recorded yet.</div>'}
+function setTimer(m){if(timerRunning)return;timerSeconds=m*60;document.getElementById('timerDisplay').textContent=String(m).padStart(2,'0')+':00';document.querySelectorAll('.timer .goalbtn').forEach(b=>b.classList.toggle('active',b.textContent.startsWith(m)))}
+function updateTimer(){document.getElementById('timerDisplay').textContent=String(Math.floor(timerSeconds/60)).padStart(2,'0')+':'+String(timerSeconds%60).padStart(2,'0')}
+function toggleTimer(){let b=document.getElementById('timerStart');if(timerRunning){clearInterval(timerInterval);timerRunning=false;b.textContent='Resume focus';document.getElementById('timerStatus').textContent='Paused';return}timerRunning=true;b.textContent='Pause';document.getElementById('timerStatus').textContent='Focus in progress';timerInterval=setInterval(()=>{timerSeconds--;updateTimer();if(timerSeconds<=0){clearInterval(timerInterval);timerRunning=false;b.textContent='Start focus';document.getElementById('timerStatus').textContent='Session completed!';completeSession(Math.max(1,Math.round((timerInitial-timerSeconds)/60)));}},1000);timerInitial=timerSeconds}
+function resetTimer(){clearInterval(timerInterval);timerRunning=false;timerSeconds=1500;updateTimer();document.getElementById('timerStart').textContent='Start focus';document.getElementById('timerStatus').textContent='Ready when you are'}
+function completeSession(m){let subject=document.getElementById('sessionSubject').value||'General Study';data.sessions.push({id:uid(),subject,minutes:m,date:todayKey(),at:Date.now()});data.xp=(data.xp||0)+25;save();toast('Focus session saved · +25 XP');renderSessions();if('Notification'in window&&Notification.permission==='granted')new Notification('Focus session completed!')}
+function renderStats(){let total=data.sessions.reduce((a,s)=>a+s.minutes,0),done=data.tasks.filter(t=>t.done).length,topics=data.subjects.flatMap(s=>s.topics),pct=topics.length?Math.round(topics.filter(t=>t.done).length/topics.length*100):0;document.getElementById('statsHours').textContent=fmtHours(total);document.getElementById('statsTasks').textContent=done;document.getElementById('statsSessions').textContent=data.sessions.length;document.getElementById('statsTopics').textContent=pct+'%';let days=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);days.push({label:d.toLocaleDateString(undefined,{weekday:'short'}),m:minsToday(dateKey(d))})}let max=Math.max(60,...days.map(x=>x.m));document.getElementById('statsChart').innerHTML=days.map(x=>`<div class="barcol"><small>${fmtM(x.m)}</small><div class="bar" style="height:${Math.max(3,x.m/max*100)}%"></div><small>${x.label}</small></div>`).join('');document.getElementById('subjectStats').innerHTML=data.subjects.map(s=>{let p=s.topics.length?Math.round(s.topics.filter(t=>t.done).length/s.topics.length*100):0;return `<div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><b>${esc(s.name)}</b><span class="tiny">${p}%</span></div><div style="height:7px;background:#29334a;border-radius:10px;overflow:hidden"><div style="height:100%;width:${p}%;background:#8b5cf6"></div></div></div>`}).join('')}
+function renderAchievements(){let total=data.sessions.reduce((a,s)=>a+s.minutes,0),topics=data.subjects.flatMap(s=>s.topics).filter(t=>t.done).length,quests=data.tasks.filter(t=>t.done).length;let items=[['🌱','First steps','Complete your first topic',topics>=1],['📚','Getting started','Complete 10 topics',topics>=10],['🎯','Quest finisher','Complete 5 quests',quests>=5],['⏱','Focused learner','Study for 5 hours',total>=300],['🔥','Consistency','Build a 3-day streak',calcStreak()>=3],['🏆','Deep work','Complete 20 study sessions',data.sessions.length>=20]];document.getElementById('achievementGrid').innerHTML=items.map(x=>`<div class="achievement" style="opacity:${x[3]?1:.48}"><div class="medal">${x[0]}</div><strong>${x[1]}</strong><div class="tiny">${x[2]}</div><div class="pill" style="display:inline-block;margin-top:10px">${x[3]?'Unlocked':'Locked'}</div></div>`).join('')}
+function renderAll(){renderDashboard();renderStudy();renderTasks();renderSessions();renderStats();renderAchievements();document.getElementById('settingsGoal').value=data.goal||3}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function exportData(){let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='study-tracker-backup.json';a.click();URL.revokeObjectURL(a.href);toast('Backup downloaded')}
+document.getElementById('importFile').addEventListener('change',async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());if(!d.subjects||!d.tasks||!d.sessions)throw Error();data=d;save();toast('Backup restored')}catch(err){alert('This backup file is not valid.')}e.target.value=''});
+document.getElementById('settingsGoal').addEventListener('change',e=>{data.goal=+e.target.value;save();toast('Daily goal updated')});
+function resetData(){if(!confirm('This will permanently delete all local study data. Continue?'))return;localStorage.removeItem(KEY);data=loadData();save();toast('Data reset')}
+document.getElementById('globalSearch').addEventListener('input',e=>{let q=e.target.value.toLowerCase().trim();if(!q)return;let match=data.subjects.some(s=>s.name.toLowerCase().includes(q)||s.topics.some(t=>t.name.toLowerCase().includes(q)))||data.tasks.some(t=>t.name.toLowerCase().includes(q));if(match){showPage('study');document.querySelectorAll('.subject').forEach(el=>{let s=data.subjects.find(x=>x.id===el.dataset.subject);if(s&&(s.name.toLowerCase().includes(q)||s.topics.some(t=>t.name.toLowerCase().includes(q))))document.getElementById('body-'+s.id).style.display='grid'})}});
+renderAll();
+</script>
+</body>
+</html>
