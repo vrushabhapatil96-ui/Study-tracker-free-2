@@ -294,7 +294,77 @@ function renderCalendar(){const month=monthCursor.getMonth(),year=monthCursor.ge
 function saveScreenTime(){let input=document.getElementById('calendarScreenMinutes'),m=Number(input.value);if(!m||m<1)return alert('Enter screen time in minutes.');data.screenLogs=data.screenLogs||[];data.screenLogs.push({id:uid(),date:dateKey(selectedDate),minutes:m,at:Date.now()});input.value='';save();toast('Screen time saved')}
 function selectDate(key){selectedDate=new Date(key+'T12:00:00');renderCalendar()}
 function changeMonth(delta){monthCursor.setMonth(monthCursor.getMonth()+delta);renderCalendar()}
-function renderStudy(){let total=0,done=0;data.subjects.forEach(s=>s.topics.forEach(t=>{total++;if(t.done)done++}));document.getElementById('syllabusProgress').textContent=(total?Math.round(done/total*100):0)+'% complete';document.getElementById('subjectList').innerHTML=data.subjects.map(s=>{let d=s.topics.filter(t=>t.done).length,p=s.topics.length?Math.round(d/s.topics.length*100):0,open=expandedSubjects.has(s.id);return `<div class="subject" data-subject="${s.id}"><div class="subjecttop"><span class="handle subject-handle" title="Hold and drag to reorder subject">⠿</span><span class="subjectname">${esc(s.name)}</span><span class="subjectmeta">${d}/${s.topics.length} chapters</span><span class="pill">${p}%</span><button class="btn small" onclick="toggleSubject('${s.id}')">${open?'Hide':'Topics ▾'}</button><button class="btn small" onclick="renameSubject('${s.id}')">✎</button><button class="btn small danger" onclick="deleteSubject('${s.id}')">×</button></div><div class="subjectbody" id="body-${s.id}" style="display:${open?'grid':'none'}">${s.topics.map(t=>`<div class="topic ${t.done?'done':''}" data-topic="${t.id}" data-parent="${s.id}"><span class="handle topic-handle" title="Hold and drag to reorder topic">⠿</span><input type="checkbox" ${t.done?'checked':''} onchange="toggleTopic('${s.id}','${t.id}')"><span>${esc(t.name)}</span><button class="btn small" onclick="renameTopic('${s.id}','${t.id}')">✎</button><button class="btn small danger" onclick="deleteTopic('${s.id}','${t.id}')">×</button></div>`).join('')}<button class="btn small" onclick="addTopic('${s.id}')">＋ Add topic</button></div></div>`}).join('')||'<div class="empty">No subjects yet. Add your first subject.</div>';}
+
+function renderStudy(){
+  let total=0,done=0;
+
+  data.subjects.forEach(s=>{
+    s.topics.forEach(t=>{
+      total++;
+      if(t.done) done++;
+    });
+  });
+
+  document.getElementById('syllabusProgress').textContent =
+    (total ? Math.round(done/total*100) : 0) + '% complete';
+
+  document.getElementById('subjectList').innerHTML =
+    data.subjects.map(s=>{
+      let d=s.topics.filter(t=>t.done).length;
+      let p=s.topics.length ? Math.round(d/s.topics.length*100) : 0;
+      let open=expandedSubjects.has(s.id);
+
+      return `
+      <div class="subject" data-subject="${s.id}">
+        <div class="subjecttop">
+          <span class="handle subject-handle"
+            data-drag-type="subject"
+            title="Hold and drag to reorder subject">⠿</span>
+
+          <span class="subjectname">${esc(s.name)}</span>
+          <span class="subjectmeta">${d}/${s.topics.length} chapters</span>
+          <span class="pill">${p}%</span>
+
+          <button class="btn small" onclick="toggleSubject('${s.id}')">
+            ${open?'Hide':'Topics ▾'}
+          </button>
+          <button class="btn small" onclick="renameSubject('${s.id}')">✎</button>
+          <button class="btn small danger" onclick="deleteSubject('${s.id}')">×</button>
+        </div>
+
+        <div class="subjectbody" id="body-${s.id}"
+          style="display:${open?'grid':'none'}">
+
+          ${s.topics.map(t=>`
+            <div class="topic ${t.done?'done':''}"
+              data-topic="${t.id}" data-parent="${s.id}">
+
+              <span class="handle topic-handle"
+                data-drag-type="topic"
+                title="Hold and drag to reorder topic">⠿</span>
+
+              <input type="checkbox" ${t.done?'checked':''}
+                onchange="toggleTopic('${s.id}','${t.id}')">
+
+              <span>${esc(t.name)}</span>
+
+              <button class="btn small"
+                onclick="renameTopic('${s.id}','${t.id}')">✎</button>
+
+              <button class="btn small danger"
+                onclick="deleteTopic('${s.id}','${t.id}')">×</button>
+            </div>
+          `).join('')}
+
+          <button class="btn small" onclick="addTopic('${s.id}')">
+            ＋ Add topic
+          </button>
+        </div>
+      </div>`;
+    }).join('') ||
+    '<div class="empty">No subjects yet. Add your first subject.</div>';
+}
+
 function toggleSubject(id){if(expandedSubjects.has(id))expandedSubjects.delete(id);else expandedSubjects.add(id);renderStudy()}
 let pointerDrag=null,dragHoldTimer=null;
 const subjectListEl=document.getElementById('subjectList');
